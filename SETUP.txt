@@ -1,0 +1,66 @@
+SMART AGRICULTURE MANAGEMENT SYSTEM - SETUP GUIDE (XAMPP, Windows)
+===================================================================
+
+1. INSTALL THE FILES
+   a) Extract smart_agriculture.zip.
+   b) Copy the whole "smart_agriculture" folder into C:\xampp\htdocs\
+   c) You should now have C:\xampp\htdocs\smart_agriculture\index.php (and db.php, style.css, etc.).
+      If you see C:\xampp\htdocs\smart_agriculture\smart_agriculture\index.php, move the files up one level.
+   (Or create the folder yourself, then create each file in Notepad/VS Code, save as .php - not .php.txt -
+    and paste the matching code.)
+
+2. START XAMPP
+   a) Open "XAMPP Control Panel".
+   b) Click Start next to Apache and next to MySQL. Both names turn green.
+
+3. CHECK THE DATABASE
+   a) Open http://localhost/phpmyadmin
+   b) Click "smart_agriculture" on the left. You should see: Farmer, Field, Crop, Irrigation,
+      Fertilizer, Disease, Market, Farmer_Log, and the view Farmer_Crop_Details.
+   c) No SQL changes are needed. Your tables, trigger, procedure and view are used exactly as you wrote them.
+      (Only if the trigger/procedure/view are missing, re-run the SQL you already have, in the SQL tab.)
+
+4. OPEN THE WEBSITE
+   http://localhost/smart_agriculture/
+
+5. TEST EVERYTHING
+   Dashboard      : counts appear. Add a farmer, come back, the count goes up.
+   Farmers        : Add a farmer -> appears in table. Edit -> change phone -> Update. Search by name.
+                    Delete a new farmer (no fields) -> confirm box -> removed.
+                    Try deleting Arun Kumar -> red message says he still owns fields (nothing is deleted).
+   Fields         : Pick farmer from dropdown, area, soil -> Add. Edit, search, filter by farmer, delete.
+   Crops          : Add with field dropdown. Search/filter. Deleting a crop that has fertilizer/disease/market
+                    records shows a friendly message.
+   Irrigation, Fertilizers, Diseases, Market Prices : Add / Edit / Delete with dropdowns. Market can be
+                    filtered by crop.
+   Trigger        : Add a farmer, then open DBMS Features -> section 8. A new "New farmer added" row appears.
+   Stored proc.   : DBMS Features -> section 7 -> choose a farmer -> Execute Procedure.
+   View           : DBMS Features -> section 6.
+   Smart Insights : Choose crop (e.g. Tomato), optional soil and season -> Get Insights.
+
+6. COMMON PROBLEMS
+   - "This site can't be reached" / page not loading: Apache is not running. Start it in XAMPP.
+   - Port 80 busy (Skype, IIS, etc.): in XAMPP click Config > Apache (httpd.conf), change "Listen 80" to
+     "Listen 8080", restart Apache, then open http://localhost:8080/smart_agriculture/
+   - 404 "Not found": wrong folder. The path must be C:\xampp\htdocs\smart_agriculture\index.php
+   - Browser downloads or shows raw PHP code: you opened the file directly (C:\...) instead of
+     http://localhost/... URL.
+   - "Database connection failed": MySQL not started, or database name is not exactly smart_agriculture.
+     If you set a MySQL root password, put it in db.php: new mysqli('localhost','root','YOURPASSWORD',...)
+   - MySQL won't start (port 3306 busy): close other MySQL services, or check the XAMPP MySQL log.
+   - "Table ... doesn't exist": table missing or misspelled in phpMyAdmin - recreate it with your CREATE TABLE SQL.
+   - "Cannot delete or update a parent row" / foreign key message: the record is used by another table.
+     Delete the child records first (the app tells you which ones).
+   - "Cannot add or update a child row": the dropdown value does not exist any more - reselect it.
+   - Blank white page or "Parse error": a PHP syntax error, usually from a bad copy-paste. Read the message
+     (it shows file and line number) and compare with the original. To see errors, open
+     C:\xampp\php\php.ini, set display_errors=On, restart Apache.
+   - Page looks unstyled: style.css is missing or not in the same folder as the .php files.
+   - Trigger log empty: the trigger after_farmer_insert doesn't exist. Check phpMyAdmin > Farmer > Triggers.
+   - Procedure error "does not exist": check phpMyAdmin > Routines.
+
+FILES
+   db.php (connection + helpers), header.php / footer.php (layout), style.css,
+   index.php (dashboard), farmers.php, fields.php, crops.php, irrigation.php, fertilizers.php,
+   diseases.php, market.php (each page = list + add + edit + delete + search in one file),
+   smart_insights.php, dbms_features.php.
